@@ -216,3 +216,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Large outputs and weights
+weights/
+outputs/
+*.pt
+*.pth
+*.bin
+*.onnx

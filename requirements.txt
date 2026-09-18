@@ -1,0 +1,11 @@
+torch
+torchvision
+torchaudio
+transformers
+accelerate
+opencv-python
+numpy
+Pillow
+timm
+scipy
+matplotlib
