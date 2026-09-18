@@ -25,37 +25,19 @@ The occluding foreground objects are removed and the hidden surface geometry is 
 ---
 
 ## 2. Technical Methodology & System Architecture
-┌───────────────────────────────┐
-              │        Input RGB Image        │
-              └───────────────┬───────────────┘
-                              │
-     ┌────────────────────────┴────────────────────────┐
-     ▼                                                 ▼
-┌───────────────────────────────┐        ┌───────────────────────────────┐
-│     Panoptic Segmentation     │        │    Monocular Depth Estimate   │
-│   (Mask2Former / Swin-Tiny)   │        │     (Depth-Anything-V2)       │
-└───────────────┬───────────────┘        └───────────────┬───────────────┘
-│                                        │
-└────────────────►◄──────────────────────┘
-│
-▼
-┌──────────────────────────────────┐
-│   Layer Depth Sorting & Plates   │
-│      (Robust Median Depth)       │
-└─────────────────┬────────────────┘
-│
-▼
-┌──────────────────────────────────┐
-│   Amodal Hole Inpainting (RGBA)  │
-│    (Telea Fast Marching Method)  │
-└─────────────────┬────────────────┘
-│
-▼
-┌──────────────────────────────────┐
-│ Intrinsic Appearance Split (Ext) │
-│   (Retinex Bilateral Filtering)  │
-└──────────────────────────────────┘
-
+```mermaid
+graph TD
+    A[Input RGB Image] --> B[Panoptic Segmentation<br>Mask2Former / Swin-Tiny]
+    A --> C[Monocular Metric Depth<br>Depth-Anything-V2]
+    
+    B --> D[Layer Depth Sorting & Plates<br>Robust Spatial Median]
+    C --> D
+    
+    D --> E[Amodal Inpainting RGBA<br>Telea Fast Marching Method]
+    E --> F[Intrinsic Appearance Split<br>Retinex Bilateral Filtering]
+    
+    F --> G[Stack of RGBA Layers + Albedo & Shading]
+```
 
 ### 2.1 Monocular Relative Depth Estimation
 Using **Depth-Anything-V2-Small**, continuous disparity maps are generated and normalized to $[0.0, 1.0]$:
